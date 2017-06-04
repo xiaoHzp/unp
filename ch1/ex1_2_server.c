@@ -20,10 +20,14 @@ int main(int argc,char* argv[])
 	bzero(&servaddr,sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port = htons(13);
+	servaddr.sin_port = htons(3000);
 
-	bind(listenfd,(SA*)&servaddr,sizeof(servaddr));
-
+	if(bind(listenfd,(SA*)&servaddr,sizeof(servaddr)) < 0)
+	{
+		printf("bind error\n");
+		exit(1);
+	}
+	listen(listenfd,5);
 	while(1)
 	{
 		connfd = accept(listenfd,(SA*)NULL,NULL);
