@@ -20,7 +20,7 @@ int main(int argc,char* argv[])
 	bzero(&servaddr,sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port = htons(3000);
+	servaddr.sin_port = htons(4000);
 
 	if(bind(listenfd,(SA*)&servaddr,sizeof(servaddr)) < 0)
 	{
@@ -28,12 +28,9 @@ int main(int argc,char* argv[])
 		exit(1);
 	}
 	listen(listenfd,5);
-	while(1)
-	{
-		connfd = accept(listenfd,(SA*)NULL,NULL);
-		ticks = time(NULL);
-		snprintf(buff,sizeof(buff),"%.24s\r\n",ctime(&ticks));
-		write(connfd,buff,strlen(buff));
-		close(connfd);
-	}
+	connfd = accept(listenfd,(SA*)NULL,NULL);
+	ticks = time(NULL);
+	snprintf(buff,sizeof(buff),"%.24s\r\n",ctime(&ticks));
+	write(connfd,buff,strlen(buff));
+	close(connfd);
 }

@@ -27,7 +27,7 @@ int main(int argc,char* argv[])
 	memset(&sockaddr,0,sizeof(sockaddr));
 	//	bzero(&sockaddr,sizeof(sockaddr));
 	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_port = htons(3000);
+	sockaddr.sin_port = htons(4000);
 	if(inet_pton(AF_INET,argv[1],&sockaddr.sin_addr) <= 0)
 	{
 		printf("inet_pton error for %s\n",argv[1]);
