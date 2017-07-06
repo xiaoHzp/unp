@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
-#include "unp.c"
-
-#define SERV_PORT 9877
-typedef struct sockaddr SA;
+#include "unp.h"
 
 void str_echo(int);
 int main(int argc,char *argv[])
@@ -26,6 +16,8 @@ int main(int argc,char *argv[])
 
 	bind(listenfd,(SA*)&servaddr,sizeof(servaddr));
 	listen(listenfd,5);
+
+	Signal(SIGCHLD,sig_chld);
 	while(1)
 	{
 		clilen = sizeof(cliaddr);
@@ -35,10 +27,13 @@ int main(int argc,char *argv[])
 		{
 			close(listenfd);
 			str_echo(connfd);
-			close(connfd);
+			exit(0);
 		}
 		close(connfd);
 	}
+
+//	connfd = accept(listenfd,NULL,NULL);
+//	str_echo(connfd);
 	exit(0);
 }
 

@@ -4,7 +4,48 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <errno.h>
+#include <signal.h>
+#include <string.h>
+#include <sys/wait.h>
 
+#define MAXLINE 4096
+#define SERV_PORT 9877
+typedef struct sockaddr SA;
+typedef void (*Sigfunc)(int);
+
+void sig_chld(int signo)
+{
+	pid_t pid;
+	int stat;
+	
+	while((pid = waitpid(-1,&stat,WNOHANG)) > 0)
+		printf("child %d terminated\n",pid);
+
+	return;
+}
+Sigfunc Signal(int signo,Sigfunc func)
+{
+	struct sigaction act,oact;
+
+	act.sa_handler = func;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	if(signo == SIGALRM)
+	{
+#ifdef	SA_INTERRUPT
+		act.sa_flags |= SA_INTERRUPT;
+#endif
+	}
+	else
+	{
+#ifdef SA_RESTART
+		act.sa_flags |= SA_RESTART;
+#endif
+	}
+	if(sigaction(signo,&act,&oact) < 0)
+		return SIG_ERR;
+	return oact.sa_handler;
+}
 ssize_t readn(int fd, void *vptr, size_t n) // read n bytes from a descriptor
 {
 	size_t nleft;
